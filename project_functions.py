@@ -58,3 +58,35 @@ def save_categorical_bar_plots(data, categorical_features):
 
     # Return the list of saved file paths
     return saved_files
+
+def remove_outliers(data, numeric_features, factor=1.5):
+    """
+    Removes outliers from a dataset based on the Interquartile Range (IQR) method.
+
+    Parameters:
+        data (pd.DataFrame): The input DataFrame containing the data.
+        numeric_features (list): List of column names corresponding to numeric features to process.
+        factor (float): The multiplier for the IQR to define outlier thresholds (default is 1.5).
+
+    Returns:
+        pd.DataFrame: A DataFrame with outliers removed from the specified numeric features.
+    """
+    feature_data = data[numeric_features].copy()
+    for col in feature_data.columns:
+        q1 = feature_data[col].quantile(0.25)
+        q3 = feature_data[col].quantile(0.75)
+        iqr = q3 - q1
+        lower_bound = q1 - factor * iqr
+        upper_bound = q3 + factor * iqr
+
+        # Filter values within the bounds
+        filtered_data = feature_data[(feature_data[col] >= lower_bound) & (feature_data[col] <= upper_bound)]
+    return filtered_data
+
+
+
+
+
+
+
+
